@@ -1,5 +1,6 @@
 #include "Material.h"
 #include "Texture.h"
+#include "utils.h"
 
 #include <cstdio>
 #include <iostream>
@@ -9,14 +10,9 @@
 using namespace std;
 
 static GLint getShader(const char* path, GLenum type){
-	const int MAX_SIZE = 2048;
-	char src[MAX_SIZE] = "";
-	char line[200] = "";
-	FILE* f = fopen(path, "r");
-	while (fgets(line, MAX_SIZE, f)){
-		strcat(src, line);
-	}
-	fclose(f);
+	char src[2048] = "";
+	readFile(path, src);
+
 
 	GLint handle = glCreateShader(type);
 	char* c = src;
