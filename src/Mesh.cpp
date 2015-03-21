@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include "Material.h"
+#include "FBO.h"
 
 Mesh::Mesh(GLenum topology, const float* vertices, int vCount, const int* indices, const int iCount, const float* uv)
 : indexCount(iCount), topology(topology), hasIndices(indices != NULL), vCount(vCount)
@@ -48,14 +49,14 @@ Mesh::Mesh(GLenum topology, const float* vertices, int vCount, const int* indice
 	
 }
 
-void Mesh::draw(Material* mat){
+void Mesh::draw(Material* mat, FBO* target){
 	mat->commitQueue();
 
 	//bind positions
 	//int count = Mesh.BASE[this.topology] + Math.floor(this.vertexCount / Mesh.COUNTS[this.topology]);
 	
-	//if (target)
-		//target.bind();
+	if (target)
+		target->bind();
 	//if (this.vaoHandle){
 
 
@@ -69,6 +70,7 @@ void Mesh::draw(Material* mat){
 	else{
 		glDrawArrays(topology, 0, vCount);
 	}
-	//if (target)
-		//target.unbind();
+	
+	if (target)
+		target->unbind();
 }

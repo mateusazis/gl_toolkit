@@ -4,11 +4,12 @@
 #include <GL/GL.h>
 
 class Material;
+class FBO;
 
 class Mesh{
 public:
 	Mesh(GLenum topology, const float* vertices, int vCount, const int* indices = NULL, const int iCount = 0, const float* uv = NULL);
-	void draw(Material* mat);
+	void draw(Material* mat, FBO* target = NULL);
 
 private:
 	GLuint posVBO, indexVBO, uvVBO, vao;

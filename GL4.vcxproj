@@ -120,6 +120,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\FBO.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\main2.cpp" />
     <ClCompile Include="src\Material.cpp" />
@@ -135,6 +136,7 @@
   <ItemGroup>
     <None Include="shaders\basic.frag" />
     <None Include="shaders\basic.vert" />
+    <None Include="shaders\invert.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

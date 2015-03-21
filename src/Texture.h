@@ -8,9 +8,11 @@ public:
 	Texture(int width, int height);
 	Texture(const char* path);
 
-	virtual GLuint getID();
+	GLuint getID();
+
+protected:
+	int width, height;
 private:
 	GLuint handle;
 	void init(int width, int height);
-	int width, height;
 };

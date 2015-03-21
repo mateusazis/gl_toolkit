@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Texture.h"
+#include "FBO.h"
 
 int main() {
 	// start GL context and O/S window using the GLFW helper library
@@ -19,7 +20,7 @@ int main() {
 	glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
 
-	GLFWwindow* window = glfwCreateWindow(640, 480, "Hello Triangle", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(400, 400, "Hello Triangle", NULL, NULL);
 	if (!window) {
 		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
 		glfwTerminate();
@@ -60,16 +61,22 @@ int main() {
 	};
 
 	Material *mat = new Material("shaders/basic.vert", "shaders/basic.frag");
+	Material *m2 = new Material("shaders/basic.vert", "shaders/invert.frag");
 	Mesh *m = new Mesh(GL_TRIANGLES, points, 4, indices, 6, uv);
 	Texture *t = new Texture("a.jpg");
+	FBO* fbo = new FBO(400, 400);
 	mat->texture("tex", t);
+	m2->texture("tex", fbo);
 
 	
 	while (!glfwWindowShouldClose(window)) {
 		// wipe the drawing surface clear
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		m->draw(mat);
+		m->draw(mat, fbo);
+		glFlush();
+
+		glClear(GL_DEPTH_BUFFER_BIT);
+		m->draw(m2);
+		glFlush();
 
 		// update other events like input handling 
 		glfwPollEvents();
