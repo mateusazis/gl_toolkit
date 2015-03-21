@@ -1,10 +1,12 @@
 #version 400
 
 layout(location = 0) in vec4 vp;
-out vec4 vp_out;
+layout(location = 1) in vec2 uvIN;
+
+out vec2 uv;
 
 void main () {
-  vp_out = vp;
+  uv = uvIN;
   
   gl_Position = vp;
 }

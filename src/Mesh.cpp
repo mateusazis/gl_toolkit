@@ -63,8 +63,8 @@ void Mesh::draw(Material* mat){
 	// draw points 0-3 from the currently bound VAO with current in-use shader
 	
 	if (indexCount != 0){
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexVBO);
-	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexVBO);
+		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 	}
 	else{
 		glDrawArrays(topology, 0, vCount);

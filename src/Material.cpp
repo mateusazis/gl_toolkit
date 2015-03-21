@@ -1,4 +1,5 @@
 #include "Material.h"
+#include "Texture.h"
 
 #include <cstdio>
 #include <iostream>
@@ -17,17 +18,10 @@ static GLint getShader(const char* path, GLenum type){
 	}
 	fclose(f);
 
-	cout << "Src:" << endl << src << endl;
-
 	GLint handle = glCreateShader(type);
 	char* c = src;
 	glShaderSource(handle, 1, &c, NULL);
 	glCompileShader(handle);
-
-	src[0] = '\0';
-	int a;
-	glGetShaderSource(handle, MAX_SIZE, &a, src);
-	cout << "actual src: " << endl << src << endl;
 
 	GLint isCompiled;
 	glGetShaderiv(handle, GL_COMPILE_STATUS, &isCompiled);
@@ -82,4 +76,35 @@ Material::Material(const char* vPath, const char* fPath){
 
 void Material::commitQueue(){
 	glUseProgram(progID);
+
+	for (map<string, TextureEntry>::iterator it = textureEntries.begin(); it != textureEntries.end(); it++){
+		string locName = it->first;
+		TextureEntry entry = it->second;
+
+		GLint loc = glGetUniformLocation(progID, locName.data());
+		glActiveTexture(GL_TEXTURE0 + entry.unit);
+		glBindTexture(GL_TEXTURE_2D, entry.t->getID());
+		glUniform1i(loc, entry.unit);
+	}
+}
+
+void Material::texture(const char* loc, Texture* t){
+	glUseProgram(progID);
+
+	int unit;
+	int handle = t->getID();
+	map<GLuint, int>::iterator it = textureUnits.find(handle);
+	if (it == textureUnits.end()){
+		unit = textureUnits.size();
+		textureUnits[handle] = unit;
+	}
+	else 
+		unit = it->second;
+
+	TextureEntry entry;
+	entry.t = t;
+	entry.unit = unit;
+
+	textureEntries[loc] = entry;
+	//this.queue.textures[locName] = { texture: tex, unit : textureUnit };
 }

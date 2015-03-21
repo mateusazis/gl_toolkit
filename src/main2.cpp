@@ -4,6 +4,7 @@
 
 #include "Mesh.h"
 #include "Material.h"
+#include "Texture.h"
 
 int main() {
 	// start GL context and O/S window using the GLFW helper library
@@ -51,9 +52,17 @@ int main() {
 
 	int indices[] = { 0, 1, 2, 0, 3, 2 };
 
+	float uv[] = {
+		0, 0,
+		0, 1,
+		1, 1,
+		1, 0
+	};
+
 	Material *mat = new Material("shaders/basic.vert", "shaders/basic.frag");
-	Mesh *m = new Mesh(GL_TRIANGLES, points, 4, indices, 6);
-	m = new Mesh(GL_TRIANGLES, points+4, 3);
+	Mesh *m = new Mesh(GL_TRIANGLES, points, 4, indices, 6, uv);
+	Texture *t = new Texture("a.jpg");
+	mat->texture("tex", t);
 
 	
 	while (!glfwWindowShouldClose(window)) {
