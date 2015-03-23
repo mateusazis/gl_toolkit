@@ -16,6 +16,8 @@ class Material{
 public:
 	Material(const char* vPath, const char* fPath);
 
+	void setFloat(const char* name, float value);
+	void setInt(const char* name, int value);
 	void texture(const char* loc, Texture* t);
 	void commitQueue();
 

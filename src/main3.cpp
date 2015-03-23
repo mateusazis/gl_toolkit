@@ -20,7 +20,7 @@ static size_t shrRoundUp(int m, int minimum){
 	return i * m;
 }
 
-int main(){
+int main4(){
 	// ===================================== SETUP =====================================
 	cl_int error = 0;   // Used to handle error codes
 	cl_platform_id platform;

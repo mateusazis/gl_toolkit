@@ -104,3 +104,13 @@ void Material::texture(const char* loc, Texture* t){
 	textureEntries[loc] = entry;
 	//this.queue.textures[locName] = { texture: tex, unit : textureUnit };
 }
+
+void Material::setFloat(const char* name, float value){
+	glUseProgram(progID);
+	glUniform1f(glGetUniformLocation(progID, name), value);
+}
+
+void Material::setInt(const char* name, int value){
+	glUseProgram(progID);
+	glUniform1i(glGetUniformLocation(progID, name), value);
+}

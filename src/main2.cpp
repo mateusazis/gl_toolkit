@@ -7,7 +7,7 @@
 #include "Texture.h"
 #include "FBO.h"
 
-int main3() {
+int main() {
 	// start GL context and O/S window using the GLFW helper library
 	if (!glfwInit()) {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");
@@ -15,10 +15,10 @@ int main3() {
 	}
 
 	// uncomment these lines if on Apple OS X
-	/*glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
+	glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(400, 400, "Hello Triangle", NULL, NULL);
 	if (!window) {
@@ -27,6 +27,7 @@ int main3() {
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
+
 
 	// start GLEW extension handler
 	glewExperimental = GL_TRUE;
@@ -67,6 +68,8 @@ int main3() {
 	FBO* fbo = new FBO(400, 400);
 	mat->texture("tex", t);
 	m2->texture("tex", fbo);
+	m2->setFloat("multiplier", 0.5f);
+	m2->setInt("size", 2);
 
 	
 	while (!glfwWindowShouldClose(window)) {
