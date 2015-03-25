@@ -7,7 +7,7 @@
 #include "Texture.h"
 #include "FBO.h"
 
-int main() {
+int main3() {
 	// start GL context and O/S window using the GLFW helper library
 	if (!glfwInit()) {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");
