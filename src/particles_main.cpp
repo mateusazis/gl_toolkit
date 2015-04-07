@@ -5,6 +5,8 @@
 #include <set>
 #include <utility>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #include "Mesh.h"
 #include "Material.h"
@@ -27,7 +29,8 @@ public:
 	}
 
 	bool collidesWith(const Particle& other) const {
-		return (position - other.position).norm() < 2 * RADIUS;
+		const float diameter = 2 * RADIUS;
+		return (position - other.position).squaredNorm() < diameter * diameter;
 	}
 
 	float distance(const Particle & other) const {
@@ -35,6 +38,7 @@ public:
 	}
 	Vector2f position;
 	Vector2f velocity;
+	Vector2f force;
 	float mass;
 };
 
@@ -63,44 +67,45 @@ public:
 	}
 
 	void computeForces(){
-		const float SPRINT_STIFFNESS = 1,
-			DAMPING_COEFFICIENT = 1;
+		const float SPRINT_STIFFNESS = 1.0f,
+			DAMPING_COEFFICIENT = 0.01f;
 
-		for (auto collision : collisions){
+		for (auto & p : particles)
+			p.force = Vector2f::Zero();
+
+
+		for (auto & collision : collisions){
 			Particle & p1 = particles[collision.first];
 			Particle & p2 = particles[collision.second];
+			float delta = 2 * RADIUS - (p1.position - p2.position).norm();
 			Vector2f deltaV = p1.velocity - p2.velocity;
 			Vector2f n = (p1.position - p2.position).normalized();
 			Vector2f vN = deltaV.dot(n) * n;
+
+			Vector2f deltaVector = delta * n;
+			//cout << "VN:" << endl << vN << endl;
 			
-			p1.velocity.y() = -vN.y() * .4f;
-			p2.velocity.y() = vN.y() * .4f;
-			//cout << "Set velocity of " << collision.first << " and " << collision.second << " to " << endl << vN << endl;
-			float posDiff = 2 * RADIUS - p1.distance(p2);
+			Vector2f normalForce = deltaVector * SPRINT_STIFFNESS + DAMPING_COEFFICIENT * -vN;
+			p1.force += normalForce;
+			p2.force -= normalForce;
 		}
-		//for (Particle & p : particles){
-			//if (p.position.y() - RADIUS < 0)
-			//	p.velocity = Vector2f(0, 0);
-		//}
 	}
 
 	void integrate(){
 		const float BOUNCINESS_COEFICIENT = .8f;
+		const float GRAVITY = -.01f;
+
 		for (Particle & p : particles){
-			p.position += p.velocity;
-			float y = p.position.y();
-			float & vY = p.velocity.y();
-			if (y - RADIUS <= 0 && vY < 0){
-				vY = abs(vY) * BOUNCINESS_COEFICIENT;
-				//cout << "Reset from " << old << " to " << y << endl;
-			}
-			else if (y - RADIUS >= 400 && vY > 0){
-				vY = -abs(vY) * BOUNCINESS_COEFICIENT;
+			if (p.position.y() - RADIUS > 0){
+				p.velocity += p.force + Vector2f(0, GRAVITY);
+				p.position += p.velocity;
 			}
 			else{
-				//cout << "Pos from " << y << " to " << y-0.05f << endl;
-				vY -= 0.05f;
+				p.velocity = Vector2f::Zero();
 			}
+//			cout << "Particle velocity: " << endl << p.velocity << endl;
+				
+			
 		}
 	}
 
