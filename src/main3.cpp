@@ -4,6 +4,7 @@
 #include <CL/cl.h>
 #include <cassert>
 #include "utils.h"
+#include <CL/cl_gl.h>
 
 using namespace std;
 
@@ -27,7 +28,7 @@ int main4(){
 	cl_context context;
 	cl_command_queue queue;
 	cl_device_id device;
-
+	
 	// Platform
 	cl_uint platformCount;
 	error = clGetPlatformIDs(1, &platform, &platformCount);

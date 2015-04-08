@@ -71,7 +71,9 @@ void Mesh::draw(Material* mat, FBO* target){
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 	}
 	else{
-		glDrawArrays(topology, 0, vCount);
+		//glDrawArrays(topology, 0, vCount);
+		for (int i = 0; i < vCount; i++)
+			glDrawArrays(topology, i, 1);
 	}
 	
 	if (target)

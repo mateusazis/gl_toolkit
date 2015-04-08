@@ -19,7 +19,7 @@ using namespace std;
 #define for_range(i, range) for(int i = 0; i < range; i++)
 
 const int POINT_COUNT = 400;
-const float RADIUS = 5;
+const float RADIUS = 11;
 
 class Particle{
 public:
@@ -67,7 +67,7 @@ public:
 	}
 
 	void computeForces(){
-		const float SPRINT_STIFFNESS = 1.0f,
+		const float SPRINT_STIFFNESS = .1f,
 			DAMPING_COEFFICIENT = 0.01f;
 
 		for (auto & p : particles)
@@ -92,7 +92,6 @@ public:
 	}
 
 	void integrate(){
-		const float BOUNCINESS_COEFICIENT = .8f;
 		const float GRAVITY = -.01f;
 
 		for (Particle & p : particles){
@@ -141,7 +140,7 @@ int main() {
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
-
+	
 
 	// start GLEW extension handler
 	glewExperimental = GL_TRUE;
@@ -154,8 +153,8 @@ int main() {
 	printf("OpenGL version supported %s\n", version);
 
 	// tell GL to only draw onto a pixel if the shape is closer to the viewer
-	glEnable(GL_DEPTH_TEST); // enable depth-testing
-	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
+	//glEnable(GL_DEPTH_TEST); // enable depth-testing
+	//glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -178,11 +177,12 @@ int main() {
 		for_range(i, POINT_COUNT){
 			float r = i % 20;
 			float g = i / 20;
-			colors[i] = Vector4f(r / 20, g / 20, 0, 1);
+			r /= 20; g /= 20;
+			colors[i] = Vector4f(r, g, sqrt(1-r*r+-g*g), 1);
 		}
 		m->setColors(&colors[0][0]);
 	}
-
+	glClearColor(1, 1, 1, 0);
 	while (!glfwWindowShouldClose(window)) {
 		// wipe the drawing surface clear
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
