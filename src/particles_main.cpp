@@ -18,6 +18,7 @@ using namespace Eigen;
 using namespace std;
 
 #define for_range(i, range) for(int i = 0; i < range; i++)
+//#define RECORD_VIDEO
 
 const int POINT_COUNT = 400;
 const float RADIUS = 11;
@@ -182,7 +183,9 @@ int main() {
 	}
 	glClearColor(1, 1, 1, 0);
 
+#if RECORD_VIDEO
 	VideoWriter v = VideoWriter("out.avi", 400, 400);
+#endif
 
 	while (!glfwWindowShouldClose(window)) {
 		// wipe the drawing surface clear
@@ -195,7 +198,10 @@ int main() {
 		m->setVertices(&pd.points[0][0], POINT_COUNT);
 
 		m->draw(mat);
+
+#if RECORD_VIDEO
 		v.addFrame();
+#endif
 		
 
 		// update other events like input handling 
@@ -203,7 +209,9 @@ int main() {
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers(window);
 	}
+#if RECORD_VIDEO
 	v.close();
+#endif
 
 	// close GL context and any other GLFW resources
 	glfwTerminate();
