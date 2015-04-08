@@ -12,6 +12,7 @@
 #include "Material.h"
 #include "Texture.h"
 #include "FBO.h"
+#include "VideoWriter.hpp"
 
 using namespace Eigen;
 using namespace std;
@@ -160,9 +161,6 @@ int main() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	/* OTHER STUFF GOES HERE NEXT */
 
-	
-	
-
 	Material *mat = new Material("shaders/particle.vert", "shaders/particle.frag");
 	mat->setFloat("radius", RADIUS);
 	
@@ -183,6 +181,9 @@ int main() {
 		m->setColors(&colors[0][0]);
 	}
 	glClearColor(1, 1, 1, 0);
+
+	VideoWriter v = VideoWriter("out.avi", 400, 400);
+
 	while (!glfwWindowShouldClose(window)) {
 		// wipe the drawing surface clear
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -194,14 +195,17 @@ int main() {
 		m->setVertices(&pd.points[0][0], POINT_COUNT);
 
 		m->draw(mat);
+		v.addFrame();
+		
 
 		// update other events like input handling 
 		glfwPollEvents();
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers(window);
 	}
-	// close GL context and any other GLFW resources
+	v.close();
 
+	// close GL context and any other GLFW resources
 	glfwTerminate();
 	return 0;
 }
