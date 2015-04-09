@@ -21,7 +21,7 @@ using namespace std;
 //#define RECORD_VIDEO
 
 const int POINT_COUNT = 400;
-const float RADIUS = 11;
+const float RADIUS = 5;
 
 class Particle{
 public:
@@ -183,7 +183,7 @@ int main() {
 	}
 	glClearColor(1, 1, 1, 0);
 
-#if RECORD_VIDEO
+#ifdef RECORD_VIDEO
 	VideoWriter v = VideoWriter("out.avi", 400, 400);
 #endif
 
@@ -199,7 +199,7 @@ int main() {
 
 		m->draw(mat);
 
-#if RECORD_VIDEO
+#ifdef RECORD_VIDEO
 		v.addFrame();
 #endif
 		
@@ -209,7 +209,7 @@ int main() {
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers(window);
 	}
-#if RECORD_VIDEO
+#ifdef RECORD_VIDEO
 	v.close();
 #endif
 
