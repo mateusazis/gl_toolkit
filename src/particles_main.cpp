@@ -122,7 +122,7 @@ public:
 	set<pair<int, int>> collisions;
 };
 
-int main() {
+int main_particles(int argc, char** argv) {
 	// start GL context and O/S window using the GLFW helper library
 	if (!glfwInit()) {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");

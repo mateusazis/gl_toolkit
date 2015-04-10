@@ -133,6 +133,7 @@
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\particles_main.cpp" />
+    <ClCompile Include="src\test_vbo_capacity.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\VideoWriter.cpp" />
@@ -151,6 +152,8 @@
     <None Include="shaders\invert.frag" />
     <None Include="shaders\particle.vert" />
     <None Include="shaders\particle.frag" />
+    <None Include="shaders\vbo.frag" />
+    <None Include="shaders\vbo.vert" />
     <None Include="vector_add_gpu.cl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
