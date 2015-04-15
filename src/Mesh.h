@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <GL/glew.h>
 #include <GL/GL.h>
+#include <map>
 
 class Material;
 class FBO;
@@ -12,6 +13,7 @@ public:
 	void draw(Material* mat, FBO* target = NULL);
 	void setVertices(const float* vertices, int vCount);
 	void setColors(const float* colors);
+	void setAttribute1f(GLint attrLoc, const float* values);
 
 	static const GLuint POSITION_LOCATION = 0, UV_LOCATION = 1, COLOR_LOCATION = 2;
 private:
@@ -20,4 +22,6 @@ private:
 	int vCount, indexCount;
 
 	bool hasIndices;
+
+	std::map<GLuint, GLuint> attributeVBOs;
 };

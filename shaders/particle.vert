@@ -3,11 +3,13 @@
 layout(location = 0) in vec4 vp;
 layout(location = 1) in vec2 uvIN;
 layout(location = 2) in vec4 vColorIn;
+layout(location = 10) in float angleIN;
 
 uniform float radius;
 
 out vec2 uv;
 out vec4 vColorOut;
+out float angleOUT;
 
 void main () {
   uv = uvIN;
@@ -19,4 +21,6 @@ void main () {
   
   gl_Position = vec4(pos, .0, 1.);
   gl_PointSize = 2. * radius;
+
+  angleOUT = angleIN;
 }

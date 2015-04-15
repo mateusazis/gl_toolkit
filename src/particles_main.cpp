@@ -21,12 +21,12 @@ using namespace std;
 //#define RECORD_VIDEO
 
 const int POINT_COUNT = 400;
-const float RADIUS = 5;
+const float RADIUS = 10;
 
 class Particle{
 public:
 	Particle(){}
-	Particle(Vector2f pos) : position(pos), mass(1), velocity(Vector2f(0,0)){
+	Particle(Vector2f pos) : position(pos), mass(1), velocity(Vector2f(0,0)), angle(0){
 
 	}
 
@@ -42,6 +42,7 @@ public:
 	Vector2f velocity;
 	Vector2f force;
 	float mass;
+	float angle;
 };
 
 class ParticleSystem {
@@ -54,7 +55,7 @@ public:
 			x *= 20;
 			y *= 20;
 			y += 30;
-			particles[i] = Particle(Vector2f(x, y));
+			particles[i] = Particle(Vector2f(x+i/20, y));
 		}
 	}
 
@@ -106,7 +107,11 @@ public:
 			}
 //			cout << "Particle velocity: " << endl << p.velocity << endl;
 				
-			
+
+			const float PI = 3.14f;
+			//p.angle += PI / 10.0f;
+			if (p.angle > 2 * PI)
+				p.angle -= 2 * PI;
 		}
 	}
 
@@ -114,11 +119,13 @@ public:
 		for_range(i, POINT_COUNT){
 			Vector2f & pos = particles[i].position;
 			points[i] = Vector4f(pos.x(), pos.y(), 0, 1);
+			angles[i] = particles[i].angle;
 		}
 	}
 
 	Particle particles[POINT_COUNT];
 	Vector4f points[POINT_COUNT];
+	float angles[POINT_COUNT];
 	set<pair<int, int>> collisions;
 };
 
@@ -196,6 +203,8 @@ int main_particles(int argc, char** argv) {
 		pd.integrate();
 		pd.updatePoints();
 		m->setVertices(&pd.points[0][0], POINT_COUNT);
+		m->setAttribute1f(10, &pd.angles[0]);
+		
 
 		m->draw(mat);
 

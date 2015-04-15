@@ -2,6 +2,10 @@
 #include "Material.h"
 #include "FBO.h"
 
+#include <algorithm>
+
+using namespace std;
+
 Mesh::Mesh(GLenum topology, const float* vertices, int vCount, const int* indices, const int iCount, const float* uv)
 : indexCount(iCount), topology(topology), hasIndices(indices != NULL), vCount(vCount), colorVBO(0)
 {
@@ -50,6 +54,24 @@ void Mesh::setColors(const float* colors){
 
 	glEnableVertexAttribArray(COLOR_LOCATION);
 	glVertexAttribPointer(COLOR_LOCATION, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+}
+
+void Mesh::setAttribute1f(GLint attrLoc, const float* values){
+	GLuint vbo;
+	
+	if (attributeVBOs.find(attrLoc) == attributeVBOs.end()){
+		glGenBuffers(1, &vbo);
+		attributeVBOs[attrLoc] = vbo;
+
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+		glEnableVertexAttribArray(attrLoc);
+		glVertexAttribPointer(attrLoc, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+	} else 
+		vbo = attributeVBOs[attrLoc];
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, vCount * sizeof(float), values, GL_STATIC_DRAW);
 }
 
 void Mesh::draw(Material* mat, FBO* target){
