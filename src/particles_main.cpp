@@ -20,7 +20,7 @@ using namespace std;
 #define for_range(i, range) for(int i = 0; i < range; i++)
 //#define RECORD_VIDEO
 
-const int POINT_COUNT = 400;
+const int POINT_COUNT = 50;
 const float RADIUS = 10;
 
 class Particle{
@@ -38,6 +38,23 @@ public:
 	float distance(const Particle & other) const {
 		return (position - other.position).norm();
 	}
+
+	float bottom() const {
+		return position.y() - RADIUS;
+	}
+
+	float top() const {
+		return position.y() + RADIUS;
+	}
+
+	float left() const {
+		return position.x() - RADIUS;
+	}
+
+	float right() const {
+		return position.x() + RADIUS;
+	}
+
 	Vector2f position;
 	Vector2f velocity;
 	Vector2f force;
@@ -50,10 +67,11 @@ public:
 	ParticleSystem(){}
 	void initializeSim(){
 		for_range(i, POINT_COUNT){
-			float x = i % 20;
-			float y = i / 20;
-			x *= 20;
-			y *= 20;
+			const int rowSize = 4;
+			float x = 180 + 20 * (i % rowSize);// +rand() % 20;
+			float y = i / rowSize;
+			//x *= 20;
+			y *= 2*RADIUS;
 			y += 30;
 			particles[i] = Particle(Vector2f(x+i/20, y));
 		}
@@ -69,13 +87,39 @@ public:
 		}
 	}
 
+	void computeBoundaryForces(Particle & p){
+		Vector2f deltaVector = Vector2f::Zero(), vN = Vector2f::Zero();
+		Vector2f normalForce;
+		const float CONTAINER_WIDTH = 400, CONTAINER_HEIGHT = 400;
+		
+		if (p.left() < 0){
+			deltaVector = Vector2f(-p.left(), 0);
+			vN = Vector2f(p.velocity.x(), 0);
+		}
+		else if (p.right() > CONTAINER_WIDTH){
+			deltaVector = Vector2f(CONTAINER_WIDTH - p.right(), 0);
+			vN = Vector2f(p.velocity.x(), 0);
+		}
+
+
+		if (p.bottom() < 0){
+			deltaVector = Vector2f(0, -p.bottom());
+			vN = Vector2f(0, p.velocity.y());
+		} else if (p.top() > CONTAINER_HEIGHT){
+			deltaVector = Vector2f(0, CONTAINER_HEIGHT-p.top());
+			vN = Vector2f(0, p.velocity.y());
+		}
+
+		normalForce = deltaVector * SPRINT_STIFFNESS + DAMPING_COEFFICIENT * -vN;
+		p.force += normalForce;
+	}
+
 	void computeForces(){
-		const float SPRINT_STIFFNESS = .1f,
-			DAMPING_COEFFICIENT = 0.01f;
 
-		for (auto & p : particles)
+		for (auto & p : particles){
 			p.force = Vector2f::Zero();
-
+			computeBoundaryForces(p);
+		}
 
 		for (auto & collision : collisions){
 			Particle & p1 = particles[collision.first];
@@ -86,7 +130,6 @@ public:
 			Vector2f vN = deltaV.dot(n) * n;
 
 			Vector2f deltaVector = delta * n;
-			//cout << "VN:" << endl << vN << endl;
 			
 			Vector2f normalForce = deltaVector * SPRINT_STIFFNESS + DAMPING_COEFFICIENT * -vN;
 			p1.force += normalForce;
@@ -96,22 +139,24 @@ public:
 
 	void integrate(){
 		const float GRAVITY = -.01f;
+		const float DT = .5f;
 
 		for (Particle & p : particles){
-			if (p.position.y() - RADIUS > 0){
-				p.velocity += p.force + Vector2f(0, GRAVITY);
-				p.position += p.velocity;
-			}
+			//if (p.position.y() - RADIUS > 0){
+				Vector2f forces = p.force + Vector2f(0, GRAVITY);
+				Vector2f acceleration = forces / p.mass;
+				p.velocity += acceleration * DT;
+				p.position += p.velocity * DT;
+			/*}
 			else{
 				p.velocity = Vector2f::Zero();
-			}
-//			cout << "Particle velocity: " << endl << p.velocity << endl;
+			}*/
 				
 
-			const float PI = 3.14f;
-			//p.angle += PI / 10.0f;
+			/*const float PI = 3.14f;
+			p.angle += 0.1f;
 			if (p.angle > 2 * PI)
-				p.angle -= 2 * PI;
+				p.angle -= 2 * PI;*/
 		}
 	}
 
@@ -127,6 +172,9 @@ public:
 	Vector4f points[POINT_COUNT];
 	float angles[POINT_COUNT];
 	set<pair<int, int>> collisions;
+
+	const float SPRINT_STIFFNESS = .1f,
+		DAMPING_COEFFICIENT = 0.01f;
 };
 
 int main_particles(int argc, char** argv) {
